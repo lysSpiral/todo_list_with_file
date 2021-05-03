@@ -112,6 +112,11 @@ ul, li {
 }
 
 /**/
+.hidden-by-default {
+  display: none;
+}
+
+/**/
 textarea {
   resize:none;
   border-radius: 10px;
@@ -125,7 +130,6 @@ textarea {
 #closing-date-cell {
   vertical-align: super;
 }
-
 
 
 #input-tk-text, #input-chg-tk-text {

@@ -1,13 +1,23 @@
-console.log('Connexion sandbox_index.js établie');
+console.log('Connexion à js établie');
 
 // =======  Variables globales  ======= //
-const taskList = document.getElementById('taskList');
-const dbNameTasks = 'toDoListSandboxDB';
+//const = document.getElementById("");
 
-var dbVersionTasks = 1;
+//const taskList = document.getElementById('taskList');
+
+const tableToDoList = document.getElementById("tableToDoList");
+const tasksTable = document.getElementById("tasksTable");
+
+const openTasksSortBtn = document.getElementById("openTasksSortBtn");
+const closedTasksSortBtn = document.getElementById("closedTasksSortBtn");
+const allTasksSortBtn = document.getElementById("allTasksSortBtn");
+
+const dbNameTasks = 'toDoListDB';
+const dbVersionTasks = 1;
+
 var db;
 var objectStoreTasks;
-var test_extList = [1,2,3,4,5];
+var externalList = "";
 var exportPrep = [];
 
 // =  Variables pour gestion date  = //
@@ -258,16 +268,34 @@ function printDayInfo() {
 	//let current_day_short_FR = new Intl.DateTimeFormat(['fr']).format(current_date);
 }
 
-// Changer la valeur pour le Display d'un élément
-function changeDisplay(elmt) {
-	//var elmt = document.getElementById("id");
-
-	if (elmt.style.display === "none") {
-	    elmt.style.display = "block";
-	  } else {
-	    elmt.style.display = "none";
-	  }
+// Montrer un  élément 
+function showElement(element) {
+    element.style.display = "block";
 }
+
+// Cacher un  élément 
+function hideElement(element) {
+    element.style.display = "none";
+}
+
+// Cacher tous les éléments d'un groupe d'éléments (Array en argument et non NodeList )
+function hideAll(array) {
+	array.forEach(function(element){
+      console.log(element.id);
+      hideElement(element);
+    })
+}
+
+// Changer la valeur pour le Display d'un élément
+// function changeDisplay(elmt) {
+// 	//var elmt = document.getElementById("id");
+
+// 	if (elmt.style.display === "none") {
+// 	    elmt.style.display = "block";
+// 	  } else {
+// 	    elmt.style.display = "none";
+// 	  }
+// }
 
 // Changer la value d'un bouton
 function changeBtnContent(btn, elmt, string1, string2) {
@@ -375,7 +403,7 @@ function fileImportPromise(importedFile) {
 	return new Promise((resolve,reject) => {
 
 		extListReader.onload = () => {
- 	    	test_extList = extListReader.result;
+ 	    	externalList = extListReader.result;
  	    	resolve(extListReader.result);
  	    };
  
@@ -394,16 +422,18 @@ async function handleUpload(event){
 	if (testCSVtype(selectedFile)) { 
 		try {
 			const fileContents = await fileImportPromise(selectedFile);
-			csvToArrayOfObjects(test_extList);
-			printFromDBTasks("open");
-			document.getElementById("hideTaskList").innerHTML = "Cacher la liste";
+			csvToArrayOfObjects(externalList);
+			printFromDBTasks();
+			// document.getElementById("hideTaskList").innerHTML = "Cacher la liste";
+			alert("Import réussi");
+			showElement(tasksTable);
 		} 
 		catch (e) {
 	 	    console.log(e.message);
 	 	 }
 	}
 	else {
-			alert("Le fichier sélectionné n'est pas au bon format (csv).");
+			//alert("Le fichier sélectionné n'est pas au bon format (csv).");
 			//clearForm('addFileList');
 	}
 }
@@ -432,11 +462,11 @@ function exportFromDBTasks(dbVersion = dbVersionTasks) {
 		};
 
 		try {
-			var objectStoreTasks = db.transaction("taskDB", "readonly").objectStore("taskDB");
+			var objectStoreTasks = db.transaction("taskObjSt", "readonly").objectStore("taskObjSt");
 
 			try {
 				console.log("try exportFromDBTasks()");
-				var exportItemRequest =  db.transaction("taskDB", "readonly").objectStore("taskDB");
+				var exportItemRequest =  db.transaction("taskObjSt", "readonly").objectStore("taskObjSt");
 				exportItemRequest.openCursor(null,'prev').onsuccess = function(event) {
 					var cursor = event.target.result;
 					if (cursor) {
@@ -460,9 +490,6 @@ function exportFromDBTasks(dbVersion = dbVersionTasks) {
 					}
 				}
 
-				exportItemRequest.onerror = function(event) {
-				console.log("Echec d'affichage pour item "+i);
-			}
 		}
 				catch (e) {
 					var newDBVersion = ++dbVersion;
@@ -536,7 +563,7 @@ function createDBTasks() {
 	console.log("fn createDBTasks() - request.onupgradeneeded");
 
 	var db = event.target.result;
-	var dbObjectStore = db.createObjectStore("taskDB", {keyPath: 'tk_id', autoIncrement: true});
+	var dbObjectStore = db.createObjectStore("taskObjSt", {keyPath: 'tk_id', autoIncrement: true});
 
 	dbObjectStore.createIndex('tk_date_created', 'tk_date_created', {unique : false});
 	dbObjectStore.createIndex('tk_domain', 'tk_domain', {unique : false});
@@ -567,7 +594,7 @@ function openDBTasks(dbVersion = dbVersionTasks) {
 		//console.log("fn addListToDBTasks() - request.onupgradeneeded");
 
 		var db = event.target.result;
-		var dbObjectStore = db.createObjectStore("taskDB", {keyPath: 'tk_id', autoIncrement: true});
+		var dbObjectStore = db.createObjectStore("taskObjSt", {keyPath: 'tk_id', autoIncrement: true});
 		dbObjectStore.createIndex('tk_date_created', 'tk_date_created', {unique : false});
 		dbObjectStore.createIndex('tk_domain', 'tk_domain', {unique : false});
 		dbObjectStore.createIndex('tk_status', 'tk_status', {unique : false});
@@ -588,13 +615,13 @@ function openDBTasks(dbVersion = dbVersionTasks) {
 	  console.log("Database error: " + event.target.errorCode);
 		};
 
-		objectStoreTasks = db.transaction("taskDB", "readwrite").objectStore("taskDB");
+		objectStoreTasks = db.transaction("taskObjSt", "readwrite").objectStore("taskObjSt");
 
 		var db = request.result;
 	  console.log("openRequest Success");
 
 		try {
-			var objectStoreTasks = db.transaction("taskDB", "readwrite").objectStore("taskDB");
+			var objectStoreTasks = db.transaction("taskObjSt", "readwrite").objectStore("taskObjSt");
 		}
 		catch (e) {
 			var newDBVersion = ++dbVersion;
@@ -626,7 +653,7 @@ function cleanObjectStoreStoreTasks() {
 	  console.log("Database error: " + event.target.errorCode);
 		};
 
-		var taskObjectTransaction = db.transaction("taskDB", "readwrite");
+		var taskObjectTransaction = db.transaction("taskObjSt", "readwrite");
 
 		// en cas de succès de l'ouverture de la transaction
 		taskObjectTransaction.oncomplete = function(event) {
@@ -638,7 +665,7 @@ function cleanObjectStoreStoreTasks() {
 		     console.log("Transaction en échec à cause de l\'erreur : ' + transaction.error");
 		  };
 
-		var taskObjectClearRequest = db.transaction("taskDB", "readwrite").objectStore("taskDB").clear();
+		var taskObjectClearRequest = db.transaction("taskObjSt", "readwrite").objectStore("taskObjSt").clear();
 
 		taskObjectClearRequest.onsuccess = function(event){		
 			console.log("Enregistrements effacés");
@@ -677,12 +704,12 @@ function createDBTasksWithArgs(newDBVersion) {
 
 	var listObjectStore = db.objectStoreNames;
 
-	if (listObjectStore.contains("taskDB")) {
-		console.log("L'objectstore 'taskDB' existe déjà");
-		var dbObjectStore = db.transaction("taskDB", "readwrite").objectStore("taskDB")
+	if (listObjectStore.contains("taskObjSt")) {
+		console.log("L'objectstore 'taskObjSt' existe déjà");
+	
 	}
 	else {
-		var dbObjectStore = db.createObjectStore("taskDB", {keyPath: 'tk_id', autoIncrement: true});
+		var dbObjectStore = db.createObjectStore("taskObjSt", {keyPath: 'tk_id', autoIncrement: true});
 	}
 
 	dbObjectStore.createIndex('tk_date_created', 'tk_date_created', {unique : false});
@@ -734,6 +761,24 @@ function storeObjectStoreCount(dbName, dbVersionTasks, currentObjectStore){
 	};
 }
 
+function storeLatestIdTask (currentObjectStore) {
+	//console.log(currentObjectStore);
+
+
+	var allKeysRequest =  currentObjectStore.getAllKeys();
+	
+
+	allKeysRequest.onsuccess = function(event) {
+		var allItems = event.target.result;
+		storageLocal("latestUsedIdTask",allItems[allItems.length-1]);
+	}
+	
+}
+
+function setUpLatestIdTask() {
+
+
+}
 
 // Ajout d'une tâche à la DB depuis une liste - Appel dans fn addListToDBTasks()
 function addItemToDBTasks(task,objectStore) {
@@ -818,14 +863,14 @@ function addListToDBTasks(taskArray, dbVersion = dbVersionTasks) {
 		var db = event.target.result;
 
 		var listObjectStore = db.objectStoreNames;
-		console.log(listObjectStore.contains("taskDB"));
+		console.log(listObjectStore.contains("taskObjSt"));
 		
-		if (listObjectStore.contains("taskDB")){
-				console.log("L'objectstore 'taskDB' existe déjà");
+		if (listObjectStore.contains("taskObjSt")){
+				console.log("L'objectstore 'taskObjSt' existe déjà");
 
 		}
 		else {
-			var dbObjectStore = db.createObjectStore("taskDB", {keyPath: 'tk_id', autoIncrement: true});
+			var dbObjectStore = db.createObjectStore("taskObjSt", {keyPath: 'tk_id', autoIncrement: true});
 		}
 		
 		dbObjectStore.createIndex('tk_date_created', 'tk_date_created', {unique : false});
@@ -855,7 +900,7 @@ function addListToDBTasks(taskArray, dbVersion = dbVersionTasks) {
 
 		try {
 			console.log("try addListToDBTasks()");
-			var objectStoreTasks = db.transaction("taskDB", "readwrite").objectStore("taskDB");
+			var objectStoreTasks = db.transaction("taskObjSt", "readwrite").objectStore("taskObjSt");
 			
 			console.log("addListToDBTasks()"+objectStoreTasks.name);
 			
@@ -886,11 +931,11 @@ function addListToDBTasks(taskArray, dbVersion = dbVersionTasks) {
 
 
 // ======= Affichage des tâches ======= //
-function showTasksTable() {
-	if (document.getElementById("tasksTable").style.display === "none") {
-	    changeDisplay(document.getElementById("tasksTable"));
-	} 
-}
+// function showTasksTable() {
+// 	if (document.getElementById("tasksTable").style.display === "none") {
+// 	    changeDisplay(document.getElementById("tasksTable"));
+// 	} 
+// }
 
 // Affichage d'un item comme ligne de tableau
 function printItemTasks(item){
@@ -907,7 +952,7 @@ function printItemTasks(item){
 	//console.log(itemID+" "+deadline_date);
 	let deadline_formatted = new Intl.DateTimeFormat(['fr']).format(deadline_date);
 
-	let status_formatted = urgentStatusValues.includes(item.tk_status) ? "<td id=\""+itemID+"_status\" class=\"to_do_list_item urgent_task\">"+item.tk_status+"</td>" : "<td id=\""+itemID+"_status\" class=\"to_do_list_item\">"+item.tk_status+"</td>";
+	let status_formatted = (openProgressValues.includes(item.tk_progress) && urgentStatusValues.includes(item.tk_status)) ? "<td id=\""+itemID+"_status\" class=\"to_do_list_item urgent_task\">"+item.tk_status+"</td>" : "<td id=\""+itemID+"_status\" class=\"to_do_list_item\">"+item.tk_status+"</td>";
 
 	// let itemTask = "<td id=\""+itemID+"_id\" class=\"to_do_list_item\">"+item.tk_id+"</td><td id=\""+itemID+"_date_created\" class=\"to_do_list_item\">"+item.tk_date_created+"</td><td id=\""+itemID+"_text\" class=\"to_do_list_item\">"+item.tk_text+"</td><td id=\""+itemID+"_domain\" class=\"to_do_list_item\">"+item.tk_domain+"</td><td id=\""+itemID+"_status\" class=\"to_do_list_item\">"+item.tk_status+"</td><td id=\""+itemID+"_deadline\" class=\"to_do_list_item\">"+deadline_formatted+"</td><td id=\""+itemID+"_progress\" class=\"to_do_list_item\">"+item.tk_progress+"</td><td id=\""+itemID+"_actions\" class=\"to_do_list_item_actions\"><button id=\"item"+item.tk_id+"_btnM\" class=\"btn btn-info btn-modify\"> M </button><button id=\"item"+item.tk_id+"_btnV\" class=\"btn btn-info btn-view\"> V </button>";
 
@@ -918,6 +963,7 @@ function printItemTasks(item){
 	var row = document.createElement("tr");
 	row.id = itemID;
 	row.innerHTML = itemTask;
+	
 	tableToDoList.appendChild(row);
 	
 
@@ -971,9 +1017,8 @@ function printFromDBTasks(range = "all",dbVersion = dbVersionTasks) {
   		console.log("printFromDBTasks() - Request Error : "+event.target.errorCode+" - prev : "+currentDBVersion+" - new : "+newDBVersion);
   		
 		createDBTasksWithArgs(newDBVersion);
-		console.log("L 916");
 		printFromDBTasks(newDBVersion);
-		console.log("L 918");
+
   		/* A AJOUTER 
   		- test si conflit de version + affichage des 2 versions
   		- possibilité de tenter ouverture avec changement de #version*/
@@ -989,41 +1034,44 @@ function printFromDBTasks(range = "all",dbVersion = dbVersionTasks) {
 		};
 
 		try {
-			var objectStoreTasks = db.transaction("taskDB", "readonly").objectStore("taskDB");
+			var objectStoreTasks = db.transaction("taskObjSt", "readonly").objectStore("taskObjSt");
 
 				try {
 					console.log("try printFromDBTasks()");
 
-					var itemRequest =  db.transaction("taskDB", "readonly").objectStore("taskDB");
+					var itemRequest =  db.transaction("taskObjSt", "readonly").objectStore("taskObjSt");
 					itemRequest.openCursor(null,'prev').onsuccess = function(event) {
 						var cursor = event.target.result;
+						//console.log("itemRequest.openCursor");
 	
 						if (cursor) {
 							switch(range) {
 								case "open":
 									if (openProgressValues.includes(cursor.value.tk_progress)) {
+										showElement(openTasksSortBtn);
 										printItemTasks(cursor.value);
+
 									}
 									break;
 								case "closed":
 									if (closedProgressValues.includes(cursor.value.tk_progress)) {
+										showElement(closedTasksSortBtn);
 										printItemTasks(cursor.value);
 									}
 									break;
 								default :
+								showElement(allTasksSortBtn);
 								printItemTasks(cursor.value);
 							}
 							cursor.continue();
 						}
 						else {
 							console.log('Plus de tâches à afficher');
+							storeLatestIdTask (itemRequest);
 						}
 							
 					}
 
-					itemRequest.onerror = function(event) {
-						console.log("Echec d'affichage pour item "+i);
-					}
 				}
 				catch (e) {
 					var newDBVersion = ++dbVersion;
@@ -1033,7 +1081,9 @@ function printFromDBTasks(range = "all",dbVersion = dbVersionTasks) {
 				}
 
 			//}
-			showTasksTable();
+			// showTasksTable();
+			showElement(tasksTable);
+			
 		}
 		catch {
 			console.log("catch printFromDBTasks()");
@@ -1049,14 +1099,32 @@ function printFromDBTasks(range = "all",dbVersion = dbVersionTasks) {
 function resetTaskTable() {
 	let blankTableHTML= "<tr id = \"tasksTableHeaders\"><th class=\"to_do_list_th\">#</th><th class=\"to_do_list_th\">Créé le</th><th class=\"to_do_list_th\">Tâche</th>	<th class=\"to_do_list_th\">Domaine</th><th class=\"to_do_list_th\">Statut</th><th class=\"to_do_list_th\">Echéance</th><th class=\"to_do_list_th\">Progression</th><th class=\"to_do_list_th\">Actions</th></tr><tr id=\"taskList\"></tr>";
 
-	document.getElementById("tableToDoList").innerHTML = blankTableHTML;
+	tableToDoList.innerHTML = blankTableHTML;
 }
 
-function refreshTaskTable() {
+
+function resetSortBtnZones() {
+	console.log("resetSortBtnZones");
+	var buttonZones = Array.from(document.querySelectorAll(".sort-btn-zone"));
+	console.log(buttonZones);
+	hideAll(buttonZones);
+}
+
+function resetDisplay() {
 	resetTaskTable();
-  	printFromDBTasks("open");
-  	showTasksTable();
-  	document.getElementById("hideTaskList").innerHTML = "Cacher la liste";
+	resetSortBtnZones();
+	hideElement(document.getElementById("formAddTaskDiv"));
+	hideElement(document.getElementById("formChangeTaskDiv"));
+}
+
+function refreshTaskTable(range = "open") {
+	resetDisplay();
+
+  	printFromDBTasks(range);
+  	//showTasksTable();
+
+  	showElement(tasksTable);
+  	// document.getElementById("hideTaskList").innerHTML = "Cacher la liste";
 }
 // ======= Affichage des tâches - FIN ======= //
 
@@ -1079,7 +1147,7 @@ function insertNewItemIntoDB(task, dbVersion = dbVersionTasks) {
 		//console.log("fn addListToDBTasks() - request.onupgradeneeded");
 
 		var db = event.target.result;
-		var dbObjectStore = db.createObjectStore("taskDB", {keyPath: 'tk_id', autoIncrement: true});
+		var dbObjectStore = db.createObjectStore("taskObjSt", {keyPath: 'tk_id', autoIncrement: true});
 		dbObjectStore.createIndex('tk_date_created', 'tk_date_created', {unique : false});
 		dbObjectStore.createIndex('tk_domain', 'tk_domain', {unique : false});
 		dbObjectStore.createIndex('tk_status', 'tk_status', {unique : false});
@@ -1100,19 +1168,18 @@ function insertNewItemIntoDB(task, dbVersion = dbVersionTasks) {
 	  console.log("Database error: " + event.target.errorCode);
 		};
 
-		objectStoreTasks = db.transaction("taskDB", "readwrite").objectStore("taskDB");
+		objectStoreTasks = db.transaction("taskObjSt", "readwrite").objectStore("taskObjSt");
 
 		var db = request.result;
 	 	console.log("openRequest Success");
 
 		try {
 			console.log("try insertNewItemIntoDB()");
-			var objectStoreTasks = db.transaction("taskDB", "readwrite").objectStore("taskDB");
+			var objectStoreTasks = db.transaction("taskObjSt", "readwrite").objectStore("taskObjSt");
 			try {
 				addItemToDBTasks(task,objectStoreTasks);
-				//printFromDBTasks("open");
 				refreshTaskTable()
-				changeDisplay(document.getElementById("formAddTaskDiv"));
+				hideElement(document.getElementById("formAddTaskDiv"));
 			}
 			catch (e) {
 				console.log (e.message);
@@ -1134,8 +1201,11 @@ function createTaskFromAddForm() {
 	//console.log("yep !"); //=> PAS EXECUTE 
 	var taskArgsAdd = [];
 	
-	var tk_id = document.getElementById("input-tk-id").value;
-	
+	// var tk_id = document.getElementById("input-tk-id").value;
+	var latestUsedIdIntTask = parseInt(window.localStorage.getItem("latestUsedIdTask"));
+	var tk_id = latestUsedIdIntTask + 1;
+
+
 	var tk_date_created = new Intl.DateTimeFormat(['fr']).format(current_date);
 
 	var tk_text = document.getElementById("input-tk-text").value;
@@ -1178,7 +1248,7 @@ function updateItemIntoDB(task, dbVersion = dbVersionTasks) {
 		//console.log("fn addListToDBTasks() - request.onupgradeneeded");
 
 		var db = event.target.result;
-		var dbObjectStore = db.createObjectStore("taskDB", {keyPath: 'tk_id', autoIncrement: true});
+		var dbObjectStore = db.createObjectStore("taskObjSt", {keyPath: 'tk_id', autoIncrement: true});
 		dbObjectStore.createIndex('tk_date_created', 'tk_date_created', {unique : false});
 		dbObjectStore.createIndex('tk_domain', 'tk_domain', {unique : false});
 		dbObjectStore.createIndex('tk_status', 'tk_status', {unique : false});
@@ -1200,7 +1270,7 @@ function updateItemIntoDB(task, dbVersion = dbVersionTasks) {
 		};
 
 		try {
-			objectStoreTasks = db.transaction("taskDB", "readwrite").objectStore("taskDB");
+			objectStoreTasks = db.transaction("taskObjSt", "readwrite").objectStore("taskObjSt");
 			//console.log(task.tk_id);
 		
 			var updateRequest = objectStoreTasks.get(task.tk_id);
@@ -1313,33 +1383,43 @@ function pageSetup(){
 	// Ajout des eventListener
 		
 	// Bouton "Ajouter une tâche"
-	document.getElementById("addToDoListItem").addEventListener("click",function(){changeDisplay(document.getElementById("formAddTaskDiv"));});
+	document.getElementById("addToDoListItem").addEventListener("click",function(){
+		var latestUsedIdIntTask = parseInt(window.localStorage.getItem("latestUsedIdTask"));
+	document.getElementById("generated_id").innerHTML = latestUsedIdIntTask + 1;
+		showElement(document.getElementById("formAddTaskDiv"));});
 
 	// Bouton "Effacer les données"
-	document.getElementById('clearTaskDB').addEventListener('click', function(){
+	document.getElementById('cleartaskObjSt').addEventListener('click', function(){
 		try {	
 
 			/*v1*/
-			var deleteRequest = indexedDB.deleteDatabase("toDoListSandboxDB");
-			console.log("deleteRequest - ongoing "+deleteRequest.readyState);
+			// var deleteRequest = indexedDB.deleteDatabase("toDoListDB");
+			// console.log("deleteRequest - ongoing "+deleteRequest.readyState);
 
-			deleteRequest.onblocked = function(e) {
-				console.log("DB open blocked", e);
-				alert("Veuillez fermer tous les autres onglets ouverts \npuis rafraîchir cet onglet \npour pouvoir effacer les données.");
-			};
+			// deleteRequest.onblocked = function(e) {
+			// 	console.log("DB open blocked", e);
+			// 	alert("Veuillez fermer tous les autres onglets ouverts \npuis rafraîchir cet onglet \npour pouvoir effacer les données.");
+			// };
 
-			deleteRequest.onerror = function(event) {
-				console.log("deleteRequest - ongoing step 2 "+deleteRequest.readyState);
-				console.log("Erreur lors de la suppression de la base 'toDoListSandboxDB'"+ event.target.errorCode);
-			};
+			// deleteRequest.onerror = function(event) {
+			// 	console.log("deleteRequest - ongoing step 2 "+deleteRequest.readyState);
+			// 	console.log("Erreur lors de la suppression de la base 'toDoListDB'"+ event.target.errorCode);
+			// };
 
-			deleteRequest.onsuccess = function(event) {
-				console.log("Suppression de la base 'toDoListSandboxDB' réussie");
-				alert("Les données ont été effacées");
-				resetTaskTable();
-				showTasksTable();
-			  	//console.log(event.result);
-			}
+			// deleteRequest.onsuccess = function(event) {
+			// 	console.log("Suppression de la base 'toDoListDB' réussie");
+			// 	alert("Les données ont été effacées");
+				
+				
+			// 	resetDisplay();
+			// 	showElement(tasksTable);
+			// }
+			confirm("Voulez-vous effacer cette liste ?\nLe contenu ne pourra pas être récupéré.");
+			cleanObjectStoreStoreTasks();
+			resetDisplay();
+			window.localStorage.setItem("latestUsedIdTask","1");
+			showElement(tasksTable);
+			alert("Les données ont été effacées");
 
 		} 
 		catch (e){
@@ -1348,44 +1428,52 @@ function pageSetup(){
 	
 	});
 
-	// Bouton "Afficher la liste"
-	document.getElementById("hideTaskList").addEventListener("click",function(){
-		//document.getElementById("tasksTable").style.display="none";
-		changeBtnContent(document.getElementById("hideTaskList"), document.getElementById("tasksTable"), "Montrer la liste", "Cacher la liste");
-		changeDisplay(document.getElementById("tasksTable"));
-		
+	// // Bouton "Afficher la liste"
+	// document.getElementById("hideTaskList").addEventListener("click",function(){
+	// 	//document.getElementById("tasksTable").style.display="none";
+	// 	changeBtnContent(document.getElementById("hideTaskList"), tasksTable, "Montrer la liste", "Cacher la liste");
+	// 	showElement(tasksTable);
 
-		//console.log("Cacher / Montrer la liste - test");
-	}); 
+	// }); 
 
 	// Bouton "Voir les tâches en cours"
 	document.getElementById("showOpenToDoListItem").addEventListener("click", function(){
-			resetTaskTable();
+			resetDisplay();
+
   			printFromDBTasks("open");
+  			showElement(openTasksSortBtn);
 	});
 	
 	// Bouton "Voir les tâches fermées"
 	document.getElementById("showClosedToDoListItem").addEventListener("click", function(){
-			resetTaskTable();
+			resetDisplay();
+
   			printFromDBTasks("closed");
+  			showElement(closedTasksSortBtn);
 	});
 
 	// Bouton "Afficher toutes les tâches"
 	document.getElementById("showAllToDoListItem").addEventListener("click", function(){
-			resetTaskTable();
+			resetDisplay();
+  			
   			printFromDBTasks();
+  			showElement(allTasksSortBtn);
 	});
 	// Bouton "Récupérer une liste externe"
 	document.querySelector('input#taskExtListFile').addEventListener('change', handleUpload);
 
 
-	// Bouton "Rafraîchir la liste"
-	document.getElementById('taskIntListFile').addEventListener('click', function() {
-		refreshTaskTable();
+	// Bouton "Créer une liste"
+	document.getElementById('createListBtn').addEventListener('click', function() {
+		createDBTasks();
+		showElement(tasksTable);
 	});
 
 	// Bouton "Cacher la zone de modification"
-	document.getElementById("hideFormChangeTaskDiv").addEventListener('click', function() {changeDisplay(document.getElementById("formChangeTaskDiv"));});	
+	document.getElementById("hideFormChangeTaskDiv").addEventListener('click', function() {hideElement(document.getElementById("formChangeTaskDiv"));});		
+
+	// Bouton "Cacher la zone de modification"
+	document.getElementById("hideFormAddTaskDiv").addEventListener('click', function() {hideElement(document.getElementById("formAddTaskDiv"));});	
 
 
 	// Bouton "Exporter la liste"

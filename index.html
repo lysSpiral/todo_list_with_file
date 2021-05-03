@@ -87,58 +87,27 @@
 <div id="bodyTo_do_list" class="card-body border">
 <div id="fileMnt"> <!-- Zone fileMnt - DEBUT -->	
 	<h4>
-	<!-- 
-	<form action="" method = "POST" id="addFileList" onsubmit="importListTasks();return false;">
-		<label for="taskListFile" class="btn btn-info" role="button">Récupérer une liste existante </label>	
-		<input type="file" name="taskListFile" value="Récupérer une liste existante" id="taskListFile" > -->
-		<!-- <input type="reset" value="Effacer" class="btn btn-warning">
-		<input type="submit" id="taskListFileSubmit" value="Envoyer" class="btn btn-success"> 
-	</form>
-	-->
+
 
 	<label for="taskExtListFile" class="btn btn-primary" role="button">Récupérer une liste externe </label>	
 	<input type="file" name="taskExtListFile" value="Récupérer une liste externe" id="taskExtListFile" >
-
-	<!--  <label for="taskIntListFile" class="btn btn-info" role="button">Récupérer une liste interne </label>	
-	<input type="file" name="taskIntListFile" value="Récupérer une liste interne" id="taskIntListFile" > -->
-
 
 	<!-- NE PAS METTRE LE BTN DANS LE FORM sinon click pris pour un submit -->
 	<button id="exportList" class="btn btn-success pull-right">Exporter liste vers CSV </button>
 
 	<button id="addToDoListItem" class="btn btn-warning pull-right">Ajouter une tâche </button>
 
-	<button id="clearTaskDB" class="btn btn-danger pull-right">Effacer les données </button>
+	<button id="cleartaskObjSt" class="btn btn-danger pull-right">Effacer les données </button>
 
 
-	<button id="taskIntListFile" class="btn btn-info pull-right">Rafraîchir la liste </button>
+	<button id="createListBtn" class="btn btn-info pull-right">Créer une liste </button>
 	</h4>
 </div>  <!-- Zone fileMnt - FIN -->
 
-<div id="printMnt">
-	<div id="progressFilters" class="bordered-div">
-		<h4>
-		<!-- <button id="changeTableBg" class="btn btn-info">Changer la couleur de fond </button> -->
-
-		<button id="showOpenToDoListItem" class="btn btn-secondary">Voir les tâches en cours </button>
-
-		<button id="showClosedToDoListItem" class="btn btn-light">Voir les tâches fermées </button>
-
-		<button id="hideTaskList" class="btn btn-danger pull-right">Montrer la liste </button>
-
-		<button id="showAllToDoListItem" class="btn btn-light pull-right">Voir toutes les tâches </button>
-		</h4>
-	</div>
-
-	<div class="bordered-div">
-		
-	</div>
-</div> 
-<!-- Zone printMnt - FIN -->
- 
-
-<div id="formAddTaskDiv" class="card-body border" style="display:none;">
-	<h4>Ajouter une tâche</h4>
+<div id="formAddTaskDiv" class="card-body border hidden-by-default">
+	<h4>Ajouter une tâche
+	<button id="hideFormAddTaskDiv" class="btn btn-info pull-right">Cacher la zone de d'ajout </button>
+	</h4>
 	<p>&nbsp;</p>
 
 	<form id="formAddTask" action="" method="POST" onsubmit="createTaskFromAddForm();return false;">
@@ -162,7 +131,8 @@
 				<td>
 					<p>
 						<label for="input-tk-id" class="label-input" >ID</label>	
-						<input id="input-tk-id" name="input-tk-id" type="number" class="input-style" size ="10"required>
+						<!-- <input id="input-tk-id" name="input-tk-id" type="number" class="input-style" size ="10"required> -->
+						<span id="generated_id"></span>
 					</p>
 				</td>
 				<td colspan="2">
@@ -225,7 +195,7 @@
 	</form>
 </div> <!-- Zone formAddTask - FIN -->
 
-<div id="formChangeTaskDiv" class="card-body border" style="display:none;">
+<div id="formChangeTaskDiv" class="card-body border hidden-by-default">
 	<h4>Modifier une tâche
 		<button id="hideFormChangeTaskDiv" class="btn btn-info pull-right">Cacher la zone de modification </button>
 	</h4>
@@ -322,8 +292,66 @@
 	</form>
 </div> <!-- Zone formChangeTask - FIN -->
 
+<div id="printMnt">
+	<div id="progressFilters" class="bordered-div">
+		<h4>
+		<!-- <button id="changeTableBg" class="btn btn-info">Changer la couleur de fond </button> -->
 
-<div id="tasksTable" style="display:none;">
+		<button id="showOpenToDoListItem" class="btn btn-primary">Voir les tâches en cours </button>
+
+		<button id="showClosedToDoListItem" class="btn btn-success">Voir les tâches fermées </button>
+
+		<!-- <button id="hideTaskList" class="btn btn-danger pull-right">Montrer la liste </button> -->
+
+		<button id="showAllToDoListItem" class="btn btn-light pull-right">Voir toutes les tâches </button>
+		</h4>
+	</div>
+
+	<div id="openTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
+		<h6>
+			Classer les tâches ouvertes
+
+			<button id="sortOpenToDoListByDeadline" class="btn btn-warning">par échéance </button>
+
+			<button id="sortOpenToDoListByProgress" class="btn btn-success pull-right">par progression </button>
+			
+			<button id="sortOpenToDoListByStatus" class="btn btn-info pull-right">par statut </button>
+
+			<button id="sortOpenToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
+
+		</h6>
+		
+	</div>
+
+	<div id="closedTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
+		<h6>
+			Classer les tâches fermées
+			<button id="sortClosedToDoListByDeadline" class="btn btn-warning">par échéance </button>
+
+			<button id="sortClosedToDoListByProgress" class="btn btn-success pull-right">par progression </button>
+			
+			<button id="sortClosedToDoListByStatus" class="btn btn-info pull-right">par statut </button>
+			
+			<button id="sortClosedToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
+		</h6>
+	</div>
+
+	<div id="allTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
+		<h6>
+			Classer les tâches
+			<button id="sortAllToDoListByDeadline" class="btn btn-warning">par échéance </button>
+
+			<button id="sortAllToDoListByProgress" class="btn btn-success pull-right">par progression </button>
+			
+			<button id="sortAllToDoListByStatus" class="btn btn-info pull-right">par statut </button>
+			
+			<button id="sortAllToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
+		</h6>
+	</div>
+</div> 
+<!-- Zone printMnt - FIN -->
+
+<div id="tasksTable" class="hidden-by-default">
 	<table id="tableToDoList">
 		<tr id = "tasksTableHeaders">
 			<th class="to_do_list_th">#</th>
