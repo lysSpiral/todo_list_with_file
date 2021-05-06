@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>Tâches</title>
+
+	<meta name="author" content="Lys Spiral">
+	<meta name="description" content="Liste de tâches">
+
+	<!-- Lien vers la page Bootstrap-->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+		
+	<!-- Lien vers la page CSS-->
+	<!-- A METTRE APRÈS LE LIEN VERS BOOTSTRAP POUR PRISE EN COMPTE-->
+	<!-- <link rel="stylesheet" href="../css/style_template.css"> -->
+	<link rel="stylesheet" href="./css/todolist.css">
+
+
+
+</head>
+<noscript>
+	
+</noscript>
+<body>
+
+<div id="wrapper">
+		
+	<header>
+		<div id="banner-header">
+			<div class="text-banner">
+				<p>Lilly's To Do List</p>
+			</div>
+		</div>
+	</header>
+
+<!-- Menu - DEBUT -->	
+<!-- 
+	<nav id='nav'> 
+		<ul class="liste-nav">
+				<li class="item">Accueil</li>
+				<li class="item">Activités</li>
+				<li class="item">Séquences</li>
+				<li class="item">Utilisateurs</li>
+				<li class="item">Rapports</li>
+		</ul>
+
+
+		<div class="btn-responsive-menu">
+				<div class="lignes"></div>
+				<div class="lignes"></div>
+				<div class="lignes"></div>
+		</div>
+	</nav> -->
+
+<!-- Menu - FIN -->	
+
+<!-- Container - MAIN -->	
+<div id="main">
+	<!-- 	
+	<section>
+		<aside>	</aside>
+		<aside>	</aside>
+		<article>
+				<h1>Pour bien créer une page</h1>
+			</article>
+	</section> 
+	-->
+
+
+<!-- Container - DEBUT -->	
+<div id="page_container" class="container-fluid bg-light">
+
+
+<!-- Zone ToDoList - DEBUT -->	
+<div id="to_do_list">
+<div class="accordion" id="accordionTo_do_list">
+<div id="To_do_list" class="card border-0" >
+<div id="headingTo_do_list" class="card-header">
+	<h2 id="titleTo_do_list">
+		<button id="btnTo_do_list" class="btn btn-block text-left font-weight-bold accordion-heading" type="button" data-toggle="collapse" data-target="#collapseTo_do_list" aria-expanded="true" aria-controls="collapseTo_do_list">
+			To Do List
+		</button>
+	</h2>
+</div> <!-- Zone headingTo_do_list - FIN -->	
+
+<div id="collapseTo_do_list" class="collapse show" aria-labelledby="headingTo_do_list" data-parent="#accordionTo_do_list">
+<div id="bodyTo_do_list" class="card-body border">
+<div id="fileMnt"> <!-- Zone fileMnt - DEBUT -->	
+	<h4>
+
+
+	<label for="taskExtListFile" class="btn btn-primary" role="button">Récupérer une liste externe </label>	
+	<input type="file" name="taskExtListFile" value="Récupérer une liste externe" id="taskExtListFile" >
+
+	<!-- NE PAS METTRE LE BTN DANS LE FORM sinon click pris pour un submit -->
+	<button id="exportList" class="btn btn-success pull-right">Exporter liste vers CSV </button>
+
+	<button id="addToDoListItem" class="btn btn-warning pull-right">Ajouter une tâche </button>
+
+	<button id="cleartaskObjSt" class="btn btn-danger pull-right">Effacer les données </button>
+
+
+	<button id="createListBtn" class="btn btn-info pull-right">Créer une liste </button>
+	</h4>
+</div>  <!-- Zone fileMnt - FIN -->
+
+<div id="formAddTaskDiv" class="card-body border hidden-by-default">
+	<h4>Ajouter une tâche
+	<button id="hideFormAddTaskDiv" class="btn btn-info pull-right">Cacher la zone de d'ajout </button>
+	</h4>
+	<p>&nbsp;</p>
+
+	<form id="formAddTask" action="" method="POST" onsubmit="createTaskFromAddForm();return false;">
+		<table id="formAddTaskTable" width="100%">
+			<tr>
+				<td colspan="2">
+					<p>
+					<label for="input-tk-date" class="label-input" >Date</label> 
+					<span id="creation_date"></span>
+					</p>
+				</td>
+				<td width="55%">
+					<p>
+					<label for="input-tk-deadline" class="label-input" >Échéance</label>	
+					<input id="input-tk-deadline" name="input-tk-deadline" type="date" class="input-style" required>
+					</p>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<p>
+						<label for="input-tk-id" class="label-input" >ID</label>	
+						<!-- <input id="input-tk-id" name="input-tk-id" type="number" class="input-style" size ="10"required> -->
+						<span id="generated_id"></span>
+					</p>
+				</td>
+				<td colspan="2">
+					<p>
+					<label for="input-tk-text" class="label-input task-input" >Tâche</label><input id="input-tk-text" name="input-tk-text" type="text" class="input-style"  size="40" maxlength="500" required>
+					</p>	
+				</td>
+			</tr>
+
+			<tr>
+				<td width="33%">
+					<p>
+					<label for="input-tk-status" class="label-input" >Statut</label>
+
+					<select id="input-tk-status" name="input-tk-status">
+		
+					</select>			
+					</p>
+				</td>
+				<td width="33%">
+					<p>
+					<label for="input-tk-domain" class="label-input" >Domaine</label>			
+					<select id="input-tk-domain" name="input-tk-domain">
+
+					</select>	
+					</p>
+				</td>
+				<td width="33%">
+					<p>
+					<label for="input-tk-progress" class="label-input" >Progression</label>			
+					<select id="input-tk-progress" name="input-tk-progress">
+					 <!--  <option value="unstarted" selected>À commencer</option>
+					  <option value="cancelled">Annulé</option>
+					  <option value="started">Commencé</option>
+					  <option value="ongoing">En cours</option>
+					  <option value="finishing">Presque fini</option>
+					  <option value="done">Terminé</option> -->
+					</select>
+					</p>	
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="3">
+					<label for="input-tk-comment" class="label-input label-textarea" >Commentaires</label>			
+					<textarea id="input-tk-comment" name="input-tk-comment" class="input-style" rows="5" cols="50"wrap="soft">Commentaires à venir
+					</textarea>
+				</td>
+
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="reset" class="btn btn-info" value="Effacer">
+				</td>
+				<td colspan="1">
+					<button input="submit" class="btn btn-warning pull-right">Ajouter </button>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div> <!-- Zone formAddTask - FIN -->
+
+<div id="formChangeTaskDiv" class="card-body border hidden-by-default">
+	<h4>Modifier une tâche
+		<button id="hideFormChangeTaskDiv" class="btn btn-info pull-right">Cacher la zone de modification </button>
+	</h4>
+	<p>&nbsp;</p>
+
+
+	<form id="formChangeTask" action="" method="POST" onsubmit="updateTaskData();return false;">
+		<table id="formChangeTaskTable" width="100%">
+			<tr>
+				<td colspan="1">
+					<p>
+					<label for="input-chg-tk-date" class="label-input" >Date</label> 
+					<span id="chg_creation_date"></span>
+					</p>
+				</td>
+				<td colspan="1">
+					<p>
+					<label for="input-chg-tk-update-time" class="label-input" >Dernière MAJ</label> 
+					<span id="chg_update_time"></span>
+					</p>
+				</td>
+				<td width="55%">
+					<p>
+					<label for="input-chg-tk-deadline" class="label-input" >Échéance</label>	
+					<input id="input-chg-tk-deadline" name="input-chg-tk-deadline" type="date" class="input-style" required>
+					</p>
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<p>
+						<label for="input-chg-tk-id" class="label-input" >ID</label>
+						<span id="chg_tk_id"></span>	
+						<!-- <input id="input-chg-tk-id" name="input-chg-tk-id" type="number" class="input-style" size ="10"required> -->
+					</p>
+				</td>
+				<td colspan="2">
+					<p>
+					<label for="input-chg-tk-text" class="label-input task-input" >Tâche</label><input id="input-chg-tk-text" name="input-chg-tk-text" type="text" class="input-style"  size="40" maxlength="500" required>
+					</p>	
+				</td>
+			</tr>
+
+			<tr>
+				<td width="33%">
+					<p>
+					<label for="input-chg-tk-status" class="label-input" >Statut</label>
+
+					<select id="input-chg-tk-status" name="input-chg-tk-status">
+
+					</select>			
+					</p>
+				</td>
+				<td width="33%">
+					<p>
+					<label for="input-chg-tk-domain" class="label-input" >Domaine</label>			
+					<select id="input-chg-tk-domain" name="input-chg-tk-domain">
+
+					</select>	
+					</p>
+				</td>
+				<td width="33%">
+					<p>
+					<label for="input-chg-tk-progress" class="label-input" >Progression</label>			
+					<select id="input-chg-tk-progress" name="input-chg-tk-progress">
+
+					</select>
+					</p>	
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="2">
+					<label for="input-chg-tk-comment" class="label-input label-textarea" >Commentaires</label>			
+					<textarea id="input-chg-tk-comment" name="input-chg-tk-comment" class="input-style" rows="5" cols="50"wrap="soft">Commentaires à venir 
+					</textarea>
+				</td>
+				<td id="closing-date-cell">
+					
+					<label for="input-chg-tk-closing-date" class="label-input" >Clôture</label> 
+					<span id="chg_closing_date"></span>
+					
+					
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="3">
+					<button id="changeSubmit" input="submit" class="btn btn-warning pull-right">Modifier </button>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div> <!-- Zone formChangeTask - FIN -->
+
+<div id="printMnt">
+	<div id="progressFilters" class="bordered-div">
+		<h4>
+		<!-- <button id="changeTableBg" class="btn btn-info">Changer la couleur de fond </button> -->
+
+		<button id="showOpenToDoListItem" class="btn btn-primary">Voir les tâches en cours </button>
+
+		<button id="showClosedToDoListItem" class="btn btn-success">Voir les tâches fermées </button>
+
+		<!-- <button id="hideTaskList" class="btn btn-danger pull-right">Montrer la liste </button> -->
+
+		<button id="showAllToDoListItem" class="btn btn-light pull-right">Voir toutes les tâches </button>
+		</h4>
+	</div>
+
+	<div id="openTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
+		<h6>
+			Classer les tâches ouvertes
+
+			<button id="sortOpenToDoListByDeadline" class="btn btn-warning">par échéance </button>
+
+			<button id="sortOpenToDoListByProgress" class="btn btn-success pull-right">par progression </button>
+			
+			<button id="sortOpenToDoListByStatus" class="btn btn-info pull-right">par statut </button>
+
+			<button id="sortOpenToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
+
+		</h6>
+		
+	</div>
+
+	<div id="closedTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
+		<h6>
+			Classer les tâches fermées
+			<button id="sortClosedToDoListByDeadline" class="btn btn-warning">par échéance </button>
+
+			<button id="sortClosedToDoListByProgress" class="btn btn-success pull-right">par progression </button>
+			
+			<button id="sortClosedToDoListByStatus" class="btn btn-info pull-right">par statut </button>
+			
+			<button id="sortClosedToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
+		</h6>
+	</div>
+
+	<div id="allTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
+		<h6>
+			Classer les tâches
+			<button id="sortAllToDoListByDeadline" class="btn btn-warning">par échéance </button>
+
+			<button id="sortAllToDoListByProgress" class="btn btn-success pull-right">par progression </button>
+			
+			<button id="sortAllToDoListByStatus" class="btn btn-info pull-right">par statut </button>
+			
+			<button id="sortAllToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
+		</h6>
+	</div>
+</div> 
+<!-- Zone printMnt - FIN -->
+
+<div id="tasksTable" class="hidden-by-default">
+	<table id="tableToDoList">
+		<tr id = "tasksTableHeaders">
+			<th class="to_do_list_th">#</th>
+			<th class="to_do_list_th">Créé le</th>
+			<th class="to_do_list_th">Tâche</th>
+			<th class="to_do_list_th">Domaine</th>
+			<th class="to_do_list_th">Statut</th>
+			<th class="to_do_list_th">Echéance</th>
+			<th class="to_do_list_th">Progression</th>
+			<th class="to_do_list_th">Actions</th>
+		</tr>
+
+		<tr id="taskList">
+		<!-- <table id="tableToDoListContent">
+			
+		</table> -->
+
+		</tr>
+	</table>
+</div> <!-- div tasksTable - FIN -->
+
+
+</div> <!-- div bodyTo_do_list - FIN -->
+	<p>&nbsp;</p>
+</div> <!-- div collapseTo_do_list - FIN -->
+
+</div>
+</div> <!-- div accordionTo_do_list - FIN -->
+</div> <!-- div ToDoList - FIN -->
+
+</div> <!-- Container - FIN -->
+			
+</div><!-- Main - FIN -->
+
+
+
+<footer>
+	<div id="banner-footer">
+		<div class="text-banner">
+			<p>© Lys Spiral</p>
+		</div>
+	</div>
+</footer>
+
+</div> <!-- Wrapper - FIN -->
+
+
+<!-- SCRIPTS -->
+
+<script src="./js/todolist.js"></script>
+	<!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+
+<!-- <script src="./js/navbar_script.js" type="text/javascript"></script> -->
+
+</body>
+</html>
