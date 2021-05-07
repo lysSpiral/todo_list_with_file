@@ -622,6 +622,7 @@ function openDBTasks(dbVersion = dbVersionTasks) {
 
 		try {
 			var objectStoreTasks = db.transaction("taskObjSt", "readwrite").objectStore("taskObjSt");
+			//window.localStorage.setItem("latestUsedIdTask","0");
 		}
 		catch (e) {
 			var newDBVersion = ++dbVersion;
@@ -1380,12 +1381,25 @@ function updateTaskData() {
 
 // Intialiser les affichages et eventListener
 function pageSetup(){
+
+	// Gestion de la mise en mémoire du numéro de la prochaine date
+	var storedId = window.localStorage.getItem("latestUsedIdTask");
+
+	console.log(storedId);
+	
+	var latestUsedIdIntTask = (storedId == null) ? 0 : parseInt(storedId);
+	window.localStorage.setItem("latestUsedIdTask", latestUsedIdIntTask);
+
+
 	// Ajout des eventListener
 		
 	// Bouton "Ajouter une tâche"
 	document.getElementById("addToDoListItem").addEventListener("click",function(){
-		var latestUsedIdIntTask = parseInt(window.localStorage.getItem("latestUsedIdTask"));
-	document.getElementById("generated_id").innerHTML = latestUsedIdIntTask + 1;
+		
+		
+		var latestUsedIdTask = parseInt(window.localStorage.getItem("latestUsedIdTask"));
+
+	document.getElementById("generated_id").innerHTML = parseInt(latestUsedIdTask + 1);
 		showElement(document.getElementById("formAddTaskDiv"));});
 
 	// Bouton "Effacer les données"
@@ -1417,7 +1431,7 @@ function pageSetup(){
 			confirm("Voulez-vous effacer cette liste ?\nLe contenu ne pourra pas être récupéré.");
 			cleanObjectStoreStoreTasks();
 			resetDisplay();
-			window.localStorage.setItem("latestUsedIdTask","1");
+			window.localStorage.setItem("latestUsedIdTask","0");
 			showElement(tasksTable);
 			alert("Les données ont été effacées");
 
