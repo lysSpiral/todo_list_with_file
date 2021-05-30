@@ -7,19 +7,36 @@
 	<meta name="author" content="Lys Spiral">
 	<meta name="description" content="Liste de tâches">
 
-	<link rel="icon" href="./src/img/lys_spiral_50x50_72.png" type="image/png">
+	<link rel="icon" href="./img/lys_spiral_50x50_72.png" type="image/png">
 	<!-- Lien vers la page Bootstrap-->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 		
 	<!-- Lien vers la page CSS-->
-	<!-- A METTRE APRÈS LE LIEN VERS BOOTSTRAP POUR PRISE EN COMPTE-->
 	<link rel="stylesheet" href="./css/todolist.css">
 
+	<script type="module" src="./js/main.js"></script>
 
 
 </head>
 <body>
+
 <div id="wrapper">
+
+<div id="modal" class="modal">
+	<span id="modalCloseBtn" class="close" title="Close Modal">&times;</span>
+		<div id="modalContent" class="container modal-content">
+      	<h3 id="modalTitle"></h3>
+      	<p id="modalQuestion"></p>
+      	<textarea id="modalComment" name="modalComment" class="input-style modal-comment" rows="5" width="90%" wrap="soft"> 
+		</textarea>
+      	<div class="clearfix">
+        	<button type="button" id="modalCancelBtn" class="pull-left btn-warning">Annuler</button>
+        	<button type="button" id="modalBtnOK" class="pull-right btn-success hidden-by-default">OK</button>
+        	<button type="button" id="modalBtnChoice2" class="pull-right btn-success">Choix 2</button>
+        	<button type="button" id="modalBtnChoice1" class="pull-right btn-primary">Choix 1</button>
+      	</div>
+    </div>
+</div>
 
 <div id="grey-line-top" class="grey-line">
 	<p id="back-link-top" class="link-to-recap">Retour au portfolio</p>
@@ -32,72 +49,72 @@
 	<header>
 		<div id="banner-header">
 			<div class="text-banner">
-				<p>Lilly's To Do List</p>
+				<p>Tableau de bord</p>
 			</div>
 		</div>
 	</header>
-
 
 
 <!-- main - DEBUT -->	
 <div id="main">
 
 
-<!-- page_container - DEBUT -->	
-<div id="page_container" class="container-fluid bg-light">
+<!-- pageContainer - DEBUT -->	
+<div id="pageContainer" class="container-fluid bg-light">
 
 
 <!-- Zone ToDoList - DEBUT -->	
-<div id="to_do_list">
-<div class="accordion" id="accordionTo_do_list">
-<div id="To_do_list" class="card border-0" >
-<div id="headingTo_do_list" class="card-header">
-	<h2 id="titleTo_do_list">
-		<button id="btnTo_do_list" class="btn btn-block text-left font-weight-bold accordion-heading" type="button" data-toggle="collapse" data-target="#collapseTo_do_list" aria-expanded="true" aria-controls="collapseTo_do_list">
-			To Do List
+<div id="toDoList">
+<div class="accordion" id="accordionToDoList">
+<div id="ToDoList" class="card border-0" >
+<div id="headingToDoList" class="card-header">
+	<h2 id="titleToDoList">
+		<button id="btnToDoList" class="btn btn-block text-left font-weight-bold accordion-heading" type="button" data-toggle="collapse" data-target="#collapseToDoList" aria-expanded="true" aria-controls="collapseToDoList">
+			Gestion des tâches
 		</button>
 	</h2>
-</div> <!-- Zone headingTo_do_list - FIN -->	
+</div> <!-- Zone headingToDoList - FIN -->	
 
-<div id="collapseTo_do_list" class="collapse show" aria-labelledby="headingTo_do_list" data-parent="#accordionTo_do_list">
-<div id="bodyTo_do_list" class="card-body">
-<div id="fileMnt"> <!-- Zone fileMnt - DEBUT -->	
+<div id="collapseToDoList" class="collapse show" aria-labelledby="headingToDoList" data-parent="#accordionToDoList">
+<div id="bodyToDoList" class="card-body">
+
+<div id="fileMnt" class="bordered-div"> <!-- Zone fileMnt - DEBUT -->
 	<h4>
+	<label for="taskExtListFile" class="btn btn-primary" role="button">Importer depuis un fichier CSV </label>	
+	<input type="file" accept=".csv" name="taskExtListFile" value="Récupérer une liste externe" id="taskExtListFile" >
 
-
-	<label for="taskExtListFile" class="btn btn-primary" role="button">Récupérer une liste externe </label>	
-	<input type="file" name="taskExtListFile" value="Récupérer une liste externe" id="taskExtListFile" >
-
-	<!-- NE PAS METTRE LE BTN DANS LE FORM sinon click pris pour un submit -->
-	<button id="exportList" class="btn btn-success pull-right">Exporter liste vers CSV </button>
-
-	<button id="addToDoListItem" class="btn btn-warning pull-right">Ajouter une tâche </button>
-
-	<button id="cleartaskObjSt" class="btn btn-danger pull-right">Effacer les données </button>
-
-
-	<button id="createListBtn" class="btn btn-info pull-right">Créer une liste </button>
-	</h4>
+	<button id="exportList" class="btn btn-success pull-right taskBtn" disabled>Exporter la liste vers un fichier CSV </button>
 </div>  <!-- Zone fileMnt - FIN -->
 
-<div id="formAddTaskDiv" class="card-body border hidden-by-default">
+<div id="taskMnt" class="bordered-div"> <!-- Zone taskMnt - DEBUT -->
+	<h4>
+	<button id="createListBtn" class="btn btn-primary ">Créer une liste </button>
+
+	<button id="addToDoListItem" class="btn btn-light taskBtn" disabled>Ajouter une tâche </button>
+
+	<button id="cleartaskObjSt" class="btn btn-danger pull-right taskBtn" disabled>Effacer les données </button>
+
+	</h4>
+</div>  <!-- Zone taskMnt - FIN -->
+
+<div id="formAddTaskDiv" class="card-body bordered-div hidden-by-default">
 	<h4>Ajouter une tâche
-	<button id="hideFormAddTaskDiv" class="btn btn-info pull-right">Cacher la zone de d'ajout </button>
+	<button id="hideFormAddTaskDiv" class="btn btn-light pull-right">Cacher la zone de d'ajout </button>
 	</h4>
 	<p>&nbsp;</p>
 
-	<form id="formAddTask" action="" method="POST" onsubmit="createTaskFromAddForm();return false;">
+	<form id="formAddTask" action="" method="POST" onsubmit="return false;">
 		<table id="formAddTaskTable" width="100%">
 			<tr>
 				<td colspan="2">
 					<p>
 					<label for="input-tk-date" class="label-input" >Date</label> 
-					<span id="creation_date"></span>
+					<span id="creationDate"></span>
 					</p>
 				</td>
 				<td width="55%">
 					<p>
-					<label for="input-tk-deadline" class="label-input" >Échéance</label>	
+					<label for="input-tk-deadline" class="label-input" >Échéance* </label>	
 					<input id="input-tk-deadline" name="input-tk-deadline" type="date" class="input-style" required>
 					</p>
 				</td>
@@ -106,14 +123,13 @@
 			<tr>
 				<td>
 					<p>
-						<label for="input-tk-id" class="label-input" >ID</label>	
-						<!-- <input id="input-tk-id" name="input-tk-id" type="number" class="input-style" size ="10"required> -->
-						<span id="generated_id"></span>
+						<label for="input-tk-id" class="label-input" >ID</label>
+						<span id="generatedId"></span>
 					</p>
 				</td>
 				<td colspan="2">
 					<p>
-					<label for="input-tk-text" class="label-input task-input" >Tâche</label><input id="input-tk-text" name="input-tk-text" type="text" class="input-style"  size="40" maxlength="500" required>
+					<label for="input-tk-text" class="label-input task-input" >Tâche* (sans virgules) </label><input id="input-tk-text" name="input-tk-text" type="text" class="input-style"  size="40" maxlength="500" required>
 					</p>	
 				</td>
 			</tr>
@@ -131,21 +147,16 @@
 				<td width="33%">
 					<p>
 					<label for="input-tk-domain" class="label-input" >Domaine</label>			
-					<select id="input-tk-domain" name="input-tk-domain">
 
-					</select>	
+					<input list="domainOptions" id="input-tk-domain" name="input-tk-domain">
+					<datalist id="domainOptions">
+					</datalist>
 					</p>
 				</td>
 				<td width="33%">
 					<p>
 					<label for="input-tk-progress" class="label-input" >Progression</label>			
 					<select id="input-tk-progress" name="input-tk-progress">
-					 <!--  <option value="unstarted" selected>À commencer</option>
-					  <option value="cancelled">Annulé</option>
-					  <option value="started">Commencé</option>
-					  <option value="ongoing">En cours</option>
-					  <option value="finishing">Presque fini</option>
-					  <option value="done">Terminé</option> -->
 					</select>
 					</p>	
 				</td>
@@ -153,7 +164,7 @@
 
 			<tr>
 				<td colspan="3">
-					<label for="input-tk-comment" class="label-input label-textarea" >Commentaires</label>			
+					<label for="input-tk-comment" class="label-input label-textarea" >Commentaires <br> (sans virgules) </label>			
 					<textarea id="input-tk-comment" name="input-tk-comment" class="input-style" rows="5" cols="50"wrap="soft">Commentaires à venir
 					</textarea>
 				</td>
@@ -161,42 +172,42 @@
 			</tr>
 			<tr>
 				<td colspan="2">
-					<input type="reset" class="btn btn-info" value="Effacer">
+					<input type="reset" class="btn btn-warning" value="Effacer">
 				</td>
 				<td colspan="1">
-					<button input="submit" class="btn btn-warning pull-right">Ajouter </button>
+					<button id="submitBtnAdd" input="submit" class="btn btn-success pull-right">Ajouter </button>
 				</td>
 			</tr>
 		</table>
 	</form>
 </div> <!-- Zone formAddTask - FIN -->
 
-<div id="formChangeTaskDiv" class="card-body border hidden-by-default">
-	<h4>Modifier une tâche
-		<button id="hideFormChangeTaskDiv" class="btn btn-info pull-right">Cacher la zone de modification </button>
+<div id="formUpdateTaskDiv" class="card-body bordered-div hidden-by-default">
+	<h4> Voir les détails / Modifier une tâche
+		<button id="hideFormUpdateTaskDiv" class="btn btn-light pull-right">Cacher la zone de modification </button>
 	</h4>
 	<p>&nbsp;</p>
 
 
-	<form id="formChangeTask" action="" method="POST" onsubmit="updateTaskData();return false;">
-		<table id="formChangeTaskTable" width="100%">
+	<form id="formUpdateTask" action="" method="POST" onsubmit="return false;">
+		<table id="formUpdateTaskTable" width="100%">
 			<tr>
 				<td colspan="1">
 					<p>
-					<label for="input-chg-tk-date" class="label-input" >Date</label> 
-					<span id="chg_creation_date"></span>
+					<label for="updCreationDate" class="label-input" >Date</label> 
+					<span id="updCreationDate"></span>
 					</p>
 				</td>
 				<td colspan="1">
 					<p>
-					<label for="input-chg-tk-update-time" class="label-input" >Dernière MAJ</label> 
-					<span id="chg_update_time"></span>
+					<label for="updUpdateTime" class="label-input" >Dernière MAJ</label> 
+					<span id="updUpdateTime"></span>
 					</p>
 				</td>
 				<td width="55%">
 					<p>
-					<label for="input-chg-tk-deadline" class="label-input" >Échéance</label>	
-					<input id="input-chg-tk-deadline" name="input-chg-tk-deadline" type="date" class="input-style" required>
+					<label for="input-upd-tk-deadline" class="label-input" >Échéance* </label>	
+					<input id="input-upd-tk-deadline" name="input-upd-tk-deadline" type="date" class="input-style" required>
 					</p>
 				</td>
 			</tr>
@@ -204,14 +215,14 @@
 			<tr>
 				<td>
 					<p>
-						<label for="input-chg-tk-id" class="label-input" >ID</label>
-						<span id="chg_tk_id"></span>	
-						<!-- <input id="input-chg-tk-id" name="input-chg-tk-id" type="number" class="input-style" size ="10"required> -->
+						<label for="updTkId" class="label-input" >ID</label>
+						<span id="updTkId"></span>
 					</p>
 				</td>
 				<td colspan="2">
 					<p>
-					<label for="input-chg-tk-text" class="label-input task-input" >Tâche</label><input id="input-chg-tk-text" name="input-chg-tk-text" type="text" class="input-style"  size="40" maxlength="500" required>
+					<label for="input-upd-tk-text" class="label-input task-input" >Tâche* (sans virgules)</label>
+					<input id="input-upd-tk-text" name="input-upd-tk-text" type="text" class="input-style"  size="40" maxlength="500" required>
 					</p>	
 				</td>
 			</tr>
@@ -219,25 +230,25 @@
 			<tr>
 				<td width="33%">
 					<p>
-					<label for="input-chg-tk-status" class="label-input" >Statut</label>
+					<label for="input-upd-tk-status" class="label-input" >Statut</label>
 
-					<select id="input-chg-tk-status" name="input-chg-tk-status">
+					<select id="input-upd-tk-status" name="input-upd-tk-status">
 
 					</select>			
 					</p>
 				</td>
 				<td width="33%">
 					<p>
-					<label for="input-chg-tk-domain" class="label-input" >Domaine</label>			
-					<select id="input-chg-tk-domain" name="input-chg-tk-domain">
-
-					</select>	
+					<label for="input-upd-tk-domain" class="label-input" >Domaine</label>			
+					<input list="domainOptions" id="input-upd-tk-domain" name="input-upd-tk-domain">
+					<datalist id="domainOptions">
+					</datalist>
 					</p>
 				</td>
 				<td width="33%">
 					<p>
-					<label for="input-chg-tk-progress" class="label-input" >Progression</label>			
-					<select id="input-chg-tk-progress" name="input-chg-tk-progress">
+					<label for="input-upd-tk-progress" class="label-input" >Progression</label>			
+					<select id="input-upd-tk-progress" name="input-upd-tk-progress">
 
 					</select>
 					</p>	
@@ -246,14 +257,14 @@
 
 			<tr>
 				<td colspan="2">
-					<label for="input-chg-tk-comment" class="label-input label-textarea" >Commentaires</label>			
-					<textarea id="input-chg-tk-comment" name="input-chg-tk-comment" class="input-style" rows="5" cols="50"wrap="soft">Commentaires à venir 
+					<label for="input-upd-tk-comment" class="label-input label-textarea" >Commentaires <br> (sans virgules) </label>			
+					<textarea id="input-upd-tk-comment" name="input-upd-tk-comment" class="input-style" rows="5" cols="50"wrap="soft">Commentaires à venir 
 					</textarea>
 				</td>
 				<td id="closing-date-cell">
 					
-					<label for="input-chg-tk-closing-date" class="label-input" >Clôture</label> 
-					<span id="chg_closing_date"></span>
+					<label for="updClosingDate" class="label-input" >Clôture</label> 
+					<span id="updClosingDate"></span>
 					
 					
 				</td>
@@ -261,101 +272,58 @@
 
 			<tr>
 				<td colspan="3">
-					<button id="changeSubmit" input="submit" class="btn btn-warning pull-right">Modifier </button>
+					<button id="submitBtnUpdate" input="submit" class="btn btn-success pull-right">Enregistrer les modifications </button>
 				</td>
 			</tr>
 		</table>
 	</form>
-</div> <!-- Zone formChangeTask - FIN -->
+</div> <!-- Zone formUpdateTask - FIN -->
 
-<div id="printMnt">
-	<div id="progressFilters" class="bordered-div">
+
+<div id="displayMnt">
+	<div id="progressFilters" class="bordered-div hidden-by-default">
 		<h4>
-		<!-- <button id="changeTableBg" class="btn btn-info">Changer la couleur de fond </button> -->
 
-		<button id="showOpenToDoListItem" class="btn btn-primary">Voir les tâches en cours </button>
+		<button id="showOpenToDoListItem" class="btn btn-primary taskBtn" disabled>Voir les tâches en cours </button>
 
-		<button id="showClosedToDoListItem" class="btn btn-success">Voir les tâches fermées </button>
+		<button id="showClosedToDoListItem" class="btn btn-success taskBtn" disabled>Voir les tâches fermées </button>
 
-		<!-- <button id="hideTaskList" class="btn btn-danger pull-right">Montrer la liste </button> -->
+		<button id="showOpenToDoListItemByDeadline" class="btn btn-light taskBtn" disabled>Classer les tâches en cours par échéance</button>
 
-		<button id="showAllToDoListItem" class="btn btn-light pull-right">Voir toutes les tâches </button>
+		<button id="showAllToDoListItem" class="btn btn-light pull-right taskBtn" disabled>Voir toutes les tâches </button>
 		</h4>
 	</div>
-
-	<div id="openTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
-		<h6>
-			Classer les tâches ouvertes
-
-			<button id="sortOpenToDoListByDeadline" class="btn btn-warning">par échéance </button>
-
-			<button id="sortOpenToDoListByProgress" class="btn btn-success pull-right">par progression </button>
-			
-			<button id="sortOpenToDoListByStatus" class="btn btn-info pull-right">par statut </button>
-
-			<button id="sortOpenToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
-
-		</h6>
-		
-	</div>
-
-	<div id="closedTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
-		<h6>
-			Classer les tâches fermées
-			<button id="sortClosedToDoListByDeadline" class="btn btn-warning">par échéance </button>
-
-			<button id="sortClosedToDoListByProgress" class="btn btn-success pull-right">par progression </button>
-			
-			<button id="sortClosedToDoListByStatus" class="btn btn-info pull-right">par statut </button>
-			
-			<button id="sortClosedToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
-		</h6>
-	</div>
-
-	<div id="allTasksSortBtn" class="bordered-div sort-btn-zone hidden-by-default">
-		<h6>
-			Classer les tâches
-			<button id="sortAllToDoListByDeadline" class="btn btn-warning">par échéance </button>
-
-			<button id="sortAllToDoListByProgress" class="btn btn-success pull-right">par progression </button>
-			
-			<button id="sortAllToDoListByStatus" class="btn btn-info pull-right">par statut </button>
-			
-			<button id="sortAllToDoListByDomain" class="btn btn-primary pull-right">par domaine </button>
-		</h6>
+	<div id="currentDisplay">
+		<p><strong>Affichage en cours : <span id="currentDisplayText"></span></strong></p>
 	</div>
 </div> 
-<!-- Zone printMnt - FIN -->
+<!-- Zone displayMnt - FIN -->
 
-<div id="tasksTable" class="hidden-by-default">
+<div id="tasksTable">
 	<table id="tableToDoList">
 		<tr id = "tasksTableHeaders">
-			<th class="to_do_list_th">#</th>
-			<th class="to_do_list_th">Créé le</th>
-			<th class="to_do_list_th">Tâche</th>
-			<th class="to_do_list_th">Domaine</th>
-			<th class="to_do_list_th">Statut</th>
-			<th class="to_do_list_th">Echéance</th>
-			<th class="to_do_list_th">Progression</th>
-			<th class="to_do_list_th">Actions</th>
+			<th class="toDoList-th">#</th>
+			<th class="toDoList-th">Créé le</th>
+			<th class="toDoList-th">Tâche</th>
+			<th class="toDoList-th">Domaine</th>
+			<th class="toDoList-th">Statut</th>
+			<th class="toDoList-th">Echéance</th>
+			<th class="toDoList-th">Progression</th>
+			<th class="toDoList-th actions-col">Actions</th>
 		</tr>
 
 		<tr id="taskList">
-		<!-- <table id="tableToDoListContent">
-			
-		</table> -->
 
 		</tr>
 	</table>
 </div> <!-- div tasksTable - FIN -->
 
-
-</div> <!-- div bodyTo_do_list - FIN -->
+</div> <!-- div bodyToDoList - FIN -->
 	<p>&nbsp;</p>
-</div> <!-- div collapseTo_do_list - FIN -->
+</div> <!-- div collapseToDoList - FIN -->
 
 </div>
-</div> <!-- div accordionTo_do_list - FIN -->
+</div> <!-- div accordionToDoList - FIN -->
 </div> <!-- div ToDoList - FIN -->
 
 </div> <!-- Container - FIN -->
@@ -367,7 +335,7 @@
 <footer>
 	<div id="banner-footer">
 		<div class="text-banner">
-			<p>© Lys Spiral</p>
+			<p>© 2021 - Lys Spiral</p>
 		</div>
 	</div>
 </footer>
@@ -377,7 +345,6 @@
 
 <!-- SCRIPTS -->
 
-<script src="./js/todolist.js"></script>
 	<!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>

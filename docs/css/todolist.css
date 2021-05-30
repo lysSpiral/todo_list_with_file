@@ -29,8 +29,8 @@ html, body{
 
 body {
   background: #F2F2F2;
-  font-family: "Quattrocento Sans", sans-serif;
-}
+  font-family: "Exo 2", sans-serif;
+ }
 
 /* ELÉMENTS DU BODY */ 
 
@@ -55,7 +55,7 @@ body {
   font-size: 0.75rem;
 } 
 
-#page_container {
+#pageContainer {
   box-sizing: border-box;
   width:100%;
   height: 100%;
@@ -75,15 +75,11 @@ body {
   padding-bottom: 5vh;
 }
 
-
-
-
 #main{
   position: relative;
   margin-left: 15px;
   margin-bottom: 5vh;
   min-height:75vh;
-
 }
 
 .pull-right {
@@ -91,33 +87,35 @@ body {
   margin-left: 15px;
 }
 
+.pull-left {
+  float:left;
+  margin-left: 15px;
+}
+
 /* Titres*/
 h1, h2, h3, h4, h5, h6 {
-  color: #8D2F5D;
   font-weight: bold;
   margin-top: 10px;
   font-family: "Exo 2", sans-serif;
 }
 
-h2, h4, button, input[type = reset] {
+h4, button, input[type = reset] {
   font-family: "Averia Libre", sans-serif;
+}
+
+#btnToDoList {
+ font-family: "Exo 2", sans-serif; 
 }
 
 /* Sections Accordéon*/
 .accordion-heading
 {
   background: #f2e6ff;
-  /*color: #8D2F5D;*/
   font-size: 1.75rem;
 }
 /* Listes */
 ul, li {
   margin: 0 0 0 5px; 
-}
-
-/**/
-.hidden-by-default {
-  display: none;
 }
 
 /**/
@@ -135,12 +133,11 @@ textarea {
   vertical-align: super;
 }
 
-
-#input-tk-text, #input-chg-tk-text {
+#input-tk-text, #input-upd-tk-text {
   width:70%;
 }
 
-#input-tk-comment, #input-chg-tk-comment {
+#input-tk-comment, #input-upd-tk-comment {
   width:70%;
 }
 
@@ -149,12 +146,12 @@ textarea {
 /* Body - Header / Footer */
 #banner-header {
   margin-top: 25;
-  background: linear-gradient(42deg, rgba(81,11,116,1) 10%, rgba(146,56,157,1) 25%, rgba(187,35,45,1) 66%, rgba(166,25,57,1) 84%, rgba(150,55,152,1) 100%);
+  background-image: url('../img/banner_violet.png');
   width: 100%;
 }
 
 #banner-footer {
-  background: linear-gradient(350deg, rgba(81,11,116,1) 10%, rgba(146,56,157,1) 25%, rgba(187,35,45,1) 66%, rgba(166,25,57,1) 84%, rgba(150,55,152,1) 100%);
+  background-image: url('../img/banner_violet.png');
   min-height:88px;
   bottom: 0;
   width: 100%;
@@ -172,6 +169,7 @@ textarea {
   color: white;
   margin: auto;
   padding: 10px;
+
 }
 
 #banner-header .text-banner {
@@ -187,9 +185,14 @@ textarea {
   padding: 30px 0 30px 15px ;
 }
 
+#banner-footer .text-banner > p {
+  float: right;
+  margin-right: 1rem;
+}
+
 
 @media screen and (min-width: 1440px) {
-  #page-container {
+  #pageContainer {
     width:1400px;
     margin-left: 15vh;
     margin-right: 15vh;
@@ -203,26 +206,56 @@ textarea {
 
 /**/
 
-#bodyTo_do_list {
+#bodyToDoList {
 
   width: 100%;
   border-radius: 10px;
 }
 
-#fileMnt, #formAddTaskDiv, #formChangeTaskDiv, .bordered-div {
+.bordered-div {
   padding: 5px; 
   width: 100%; 
   border:1px solid #ced4da;
   margin-bottom: 10px;
   border-radius: 10px;
-}
-
-#fileMnt {
   display: inline-flex;
   flex-direction: column;
 }
 
-#headingTo_do_list, .card-header {
+.btn {
+  margin-bottom: 0.5vh;
+
+}
+
+.btn-primary {
+  background-color: #191970;
+  border-color: #191970;
+}
+
+.btn-primary:hover {
+  background-color: #2525a7;
+  border-color: #2525a7;
+}
+
+.btn-success {
+  background-color: #006600;
+  border-color: #006600;
+}
+
+.btn-light {
+  border-color: #ced4da;
+}
+
+.btn-danger {
+  background-color: #990000;
+  border-color: #990000;
+}
+
+#fileMnt, #taskMnt {
+  
+}
+
+#headingToDoList, .card-header {
   border-bottom: none;
   padding: 2px;
 
@@ -242,31 +275,15 @@ textarea {
 
 #tableToDoList tr:hover, 
 #tableToDoList tr:nth-child(odd):hover {
-  background-color: #8D2F5D;
-  color: white;
+  background-color: #d5d5f6;
   border-left: 5px solid white;
 }
 
 #tableToDoList tr:nth-child(odd) {
   background-color: #f2e6ff;
- /* background-color: #d9d9d9;*/
-}
-
-#tableToDoListContent tr:hover, 
-#tableToDoListContent tr:nth-child(odd):hover {
-  background-color: #8D2F5D;
-  color: white;
-  border-left: 5px solid white;
-}
-
-#tableToDoListContent tr:nth-child(odd) {
-  background-color: #f2e6ff;
- /* background-color: #d9d9d9;*/
 }
 
 .table-dark tr:nth-child(odd) {
-  /*background-color: #d9d9d9;*/ /*PAS PRIS EN COMPTE*/ 
-  /*border-color: #f2e6ff;*/
   color: black;
   border-left: 5px solid #f2e6ff;
 }
@@ -275,48 +292,39 @@ textarea {
     border-color: white;
 }
 
-.closed {
-  /*background: #888;
-  color: #fff;*/
+/*.closed {
   text-decoration: line-through;
-} 
+}*/ 
 
-.to_do_list_th {
+.toDoList-th {
   padding: 12px 10px;
   text-align: left;
   color: white;
-  /*font-weight: bolder;*/
-  background-color: #8D2F5D;
+  background-color: #5B005B;
   margin-right: 20px;
   border-left: 5px solid white;
   border-bottom: 5px solid white;
-  /*font-size: 22px;*/
   font-size:1.5vw;
-
 }
 
-.to_do_list_item {
+.actions-col {
+  width: 13%;
+}
+
+.toDoList-item {
   padding: 8px;
   margin: 5px;
 }
 
-.urgent_task {
+.urgent-task {
   color:red;
   font-weight: bold;
 }
 
-/*.to_do_list_item_actions {
-  display: inline-block;
-  padding-bottom: 5px;
-  padding-top: 5px;
-}
-*/
 
-.to_do_list_item_actions {
+.toDoList-item-actions {
   display: inline-block;
- /* padding-bottom: 5px;
-  padding-top: 5px;*/
-  padding: 15% 25%;
+  padding: 2vh 2vw;
 
 }
 
@@ -342,6 +350,10 @@ textarea {
   background-color: #990000;
 }
 
+button:disabled {
+  opacity:0.5;
+}
+
 /* Tableau Ajout To Do List */
 
 .label-input {
@@ -362,11 +374,92 @@ textarea {
       
 }
 
-
-/*
-#formAdd_to_do_list_item_table table, td, tr {
-  border: 2px solid black;
-
-}*/
+#formAddTaskDiv input:required {
+  border-color: #800000;
+  border-radius: 7px;
+}
 
 
+/*Modale*/
+
+/* Set a style for all buttons */
+* {box-sizing: border-box}
+
+/* Set a style for all buttons */
+#modal button {
+  padding: 14px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.9;
+  border-radius: 7px;
+}
+
+#modal button:hover {
+  opacity:1;
+}
+
+/* Add padding and center-align text to the container */
+.container {
+  padding: 16px;
+  text-align: center;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background: rgba(102, 102, 153, 0.7);
+  padding-top: 50px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #E6E6E6;
+  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+  border: 1px solid #888;
+  width: 70%; /* Could be more or less, depending on screen size */
+}
+
+
+/* The Modal Close Button (x) */
+.close {
+  position: absolute;
+  right: 35px;
+  top: 15px;
+  font-size: 40px;
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  cursor: pointer;
+}
+
+/* Clear floats */
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+
+.modal-comment{
+  margin: 2vh 3vw;
+}
+
+#modalTitle {
+  color:black;
+}
+
+/**/
+.hidden-by-default {
+  display: none;
+}
